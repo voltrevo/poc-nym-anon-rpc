@@ -43,6 +43,27 @@ artifact model.
 | `build.mjs` | esbuild → `dist/nym-anon-rpc-worker.js` (single IIFE, the §4 artifact) and prints its keccak256 `workerHash` |
 | `test/` | Unit tests against fakes + a smoke test that boots the built bundle in Node |
 
+## Published specifier (Ethereum mainnet)
+
+This worker is published per SPEC §4: a
+[`WorkerSpecifier`](https://github.com/privacy-ethereum/anon-rpc/blob/main/impl/specifier/src/WorkerSpecifier.sol)
+contract pins the bundle's keccak256 and points at a resolver that serves the
+bytes (the [`keccak` branch](https://github.com/voltrevo/poc-nym-anon-rpc/tree/keccak)
+of this repo — content-addressed, so the URL is immutable).
+
+| | |
+| --- | --- |
+| specifier | [`0xfCc24f66E2F8bdF17537f2b117c80707219e91AD`](https://etherscan.io/address/0xfCc24f66E2F8bdF17537f2b117c80707219e91AD) (source verified on [Sourcify](https://repo.sourcify.dev/1/0xfCc24f66E2F8bdF17537f2b117c80707219e91AD)) |
+| workerHash | `0x9cfb7effc56217ef03929c4ba1cae8d1733edc338457161a76534d831fcbc49f` |
+| resolver | [raw.githubusercontent.com/voltrevo/poc-nym-anon-rpc/keccak/9c/fb7eff…](https://raw.githubusercontent.com/voltrevo/poc-nym-anon-rpc/keccak/9c/fb7effc56217ef03929c4ba1cae8d1733edc338457161a76534d831fcbc49f) |
+
+```js
+const worker = new AnonRpcWorker({
+  address: "0xfCc24f66E2F8bdF17537f2b117c80707219e91AD",
+  preExisting: { rpcProvider },
+});
+```
+
 ## Build & test
 
 ```sh
