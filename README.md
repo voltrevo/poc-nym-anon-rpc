@@ -1,5 +1,7 @@
 # nym-anon-rpc-worker
 
+[![ci](https://github.com/voltrevo/poc-nym-anon-rpc/actions/workflows/ci.yml/badge.svg)](https://github.com/voltrevo/poc-nym-anon-rpc/actions/workflows/ci.yml)
+
 An [anon-rpc](https://github.com/privacy-ethereum/anon-rpc) conforming worker
 (anon-client, SPEC §3.2) that fulfils `fetch` calls over the **Nym mixnet**,
 using [`@nymproject/mix-fetch`](https://www.npmjs.com/package/@nymproject/mix-fetch) v2

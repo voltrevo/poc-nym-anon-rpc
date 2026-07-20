@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      # Builds dist/nym-anon-rpc-worker.js and prints its keccak256
+      # workerHash — the §4 artifact a specifier contract pins.
+      - run: npm run build
+
+      # Unit tests against fakes + a smoke test that boots the built bundle
+      # in Node. No browser or network needed.
+      - run: npm test
+
+      - run: npx playwright install --with-deps chromium
+
+      # Full e2e: real @anon-rpc/browser-harness in headless Chromium,
+      # eth_blockNumber over the LIVE Nym mainnet mixnet. Gated on mixnet
+      # topology health (test/e2e/topology.mjs): around hourly epoch
+      # rollovers it SKIPs (exit 0) instead of failing on network weather.
+      - run: npm run test:e2e
