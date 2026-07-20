@@ -56,6 +56,7 @@ of this repo — content-addressed, so the URL is immutable).
 | specifier | [`0xfCc24f66E2F8bdF17537f2b117c80707219e91AD`](https://etherscan.io/address/0xfCc24f66E2F8bdF17537f2b117c80707219e91AD) (source verified on [Sourcify](https://repo.sourcify.dev/1/0xfCc24f66E2F8bdF17537f2b117c80707219e91AD)) |
 | workerHash | `0x9cfb7effc56217ef03929c4ba1cae8d1733edc338457161a76534d831fcbc49f` |
 | resolver | [raw.githubusercontent.com/voltrevo/poc-nym-anon-rpc/keccak/9c/fb7eff…](https://raw.githubusercontent.com/voltrevo/poc-nym-anon-rpc/keccak/9c/fb7effc56217ef03929c4ba1cae8d1733edc338457161a76534d831fcbc49f) |
+| built from | [`e66dda5`](https://github.com/voltrevo/poc-nym-anon-rpc/commit/e66dda5) with the locked deps — `@nymproject/mix-fetch` 2.0.0, `@nymproject/mix-tunnel` 0.1.0, `fake-indexeddb` 6.2.5, `esbuild` 0.24.2. The build is deterministic: `npm ci && npm run build` reproduces the pinned hash (CI does, every run). |
 
 ```js
 const worker = new AnonRpcWorker({
@@ -63,6 +64,21 @@ const worker = new AnonRpcWorker({
   preExisting: { rpcProvider },
 });
 ```
+
+### Try it in the anon-rpc demo
+
+Paste the specifier address into the balance-watcher demo at
+**<https://privacy-ethereum.github.io/anon-rpc/demo/>** and hit *Start
+watching* — the harness reads the specifier on-chain, fetches this bundle
+from the resolver, verifies its keccak256, and polls a balance through the
+mixnet.
+
+Expect mixnet weather: tunnel setup can take anywhere from ~15 s to a couple
+of minutes (failed attempts are retried with backoff), and the first query or
+two on a cold tunnel sometimes fail with a transient
+`hyper error: connection closed before message completed` — the demo keeps
+polling every 12 s and recovers on its own. Give it ~2 minutes before
+concluding anything is wrong.
 
 ## Build & test
 
